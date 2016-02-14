@@ -8,9 +8,8 @@ package com.example.web;
 import com.example.model.BeerExpert;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class BeerSelect extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BeerSelect</title>");            
+            out.println("<title>Servlet BeerSelect</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet BeerSelect at " + request.getContextPath() + "</h1>");
@@ -63,56 +62,26 @@ public class BeerSelect extends HttpServlet {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    //    processRequest(request, response);
-        
-        	response.setContentType("text/html");
-                String pass="hiresh";
-	PrintWriter out = response.getWriter();
-	
-                if(request.getParameter("password").equals(pass)){
-	
-        out.println("<center><u>BEER SELECTION ADVICE</u></center><br>");
-	String clr=request.getParameter("color");
-	
-	out.println("<br><center><h2>Got your beer color - </h2></center> <center> <h1>" +clr +"</h1></center> ");
-
-        BeerExpert expert=new BeerExpert();
-        
-        List result=expert.getBrands(clr);
-        Iterator it= result.iterator();
-//        while(it.hasNext()){
-//            out.println(it.next());
-//        }
-
-if(result.size()!=0){
-    for(int i=0;i<result.size();i++)
-  out.println("<center>---<strong>"+result.get(i)+"</strong></center><br>");  
-}
-        }
-        else{
-            out.println("<center><strong><u>WRONG PASSWORD</u></strong></center>");
-        }
+PrintWriter out=response.getWriter();
+    try{
+     
+            String clr = request.getParameter("color");
+            BeerExpert expert = new BeerExpert();
+            List result = expert.getBrands(clr);
+            request.setAttribute("styles", result);
+            RequestDispatcher view=request.getRequestDispatcher("Result.jsp");
+            view.forward(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    catch(Exception e){
+        out.println("<p>ERROR<p>");
+    }
+    }
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "this projects walks me through MVC pattern";
     }// </editor-fold>
 
 }
